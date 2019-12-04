@@ -1,0 +1,192 @@
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form toolbar">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">源地址：</label>
+                        <div class="layui-input-inline">
+                            <input id="sourcePath" name="source_path" class="layui-input" type="text"
+                                   placeholder="输入源地址" lay-verify="required" required
+                                   value="/user/longhao/call_data.csv"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">目标地址：</label>
+                        <div class="layui-input-inline">
+                            <input id="targetPath" name="target_path" class="layui-input" type="text"
+                                   placeholder="输入目标地址" lay-verify="required" required value="/tmp/longhao/test"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">目标块数：</label>
+                        <div class="layui-input-inline">
+                            <input id="reduceNumber" name="reduce_number" class="layui-input" type="text"
+                                   placeholder="输入目标块数目" lay-verify="required" required value="10"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button id="submit-task" ,lay-filter="task-submit" class="layui-btn layui-btn-fluid" lay-submit>
+                            提交任务
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <!-- 表格顶部工具栏 -->
+            <div class="layui-form toolbar">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label w-auto">搜索：</label>
+                        <div class="layui-input-inline mr0">
+                            <input name="keyword" class="layui-input" type="text" placeholder="输入关键字"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn icon-btn" lay-filter="searchSubmitRspTask" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="layui-table" id="rspTaskTable" lay-filter="rspTaskTable"></table>
+        </div>
+    </div>
+</div>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="rspTaskTableBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="show">查看任务</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<!-- js部分 -->
+<script>
+    layui.use(['layer', 'form', 'table', 'util', 'admin', 'tableX', 'config'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var admin = layui.admin;
+        var tableX = layui.tableX;
+        var config = layui.config;
+
+        // 添加按钮点击事件
+        $('#submit-task').click(function () {
+            var sourcePath = document.getElementById('sourcePath').value;
+            var targetPath = document.getElementById('targetPath').value;
+            var reduceNumber = document.getElementById('reduceNumber').value;
+
+            if (sourcePath.length == 0 || targetPath.length == 0 || reduceNumber.length == 0) {
+                return;
+            }
+            admin.ajax({
+                url: config.base_server + 'rsp/convert',
+                data: {'sourcePath': sourcePath, 'targetPath': targetPath, 'reduceNumber': reduceNumber},
+                type: 'post',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code == 200) {
+                        layer.msg("任务提交成功", {icon: 1, time: 5000})
+                        $('#textShow').text(res.msg)
+                    } else {
+                        layer.msg(res.code + ":" + "任务提交失败", {icon: 5})
+                    }
+                }
+            });
+
+            // clearField();
+        });
+
+        function clearField() {
+            document.getElementById('sourcePath').value = "";
+            document.getElementById('targetPath').value = "";
+            document.getElementById('reduceNumber').value = "";
+        }
+
+        var tableWidth = layui.$('.layui-table').width();
+
+        // 渲染表格
+        var insTb = tableX.render({
+            elem: '#rspTaskTable',
+            url: config.base_server + 'rspTask',
+            where: {
+                access_token: config.getToken().access_token
+            },
+            page: true,
+            cellMinWidth: 100,
+            cols: [[
+                {type: 'numbers'},
+                {field: 'username', title: '账户', sort: true},
+                // {field: 'param', title: '参数', sort: true,width:tableWidth*0.35},
+                {
+                    title: '源地址', templet: function (d) {
+                        return d.param.split("|")[0];
+                    }
+                },
+                {
+                    title: '目标地址', templet: function (d) {
+                        return d.param.split("|")[1];
+                    }
+                },
+                {
+                    title: '块数', templet: function (d) {
+                        return d.param.split("|")[2];
+                    }
+                },
+                {
+                    title: '日志文件', templet: function (d) {
+                        return d.param.split("|")[3];
+                    }
+                },
+                {
+                    field: 'createTime', templet: function (d) {
+                        return util.toDateString(d.createTime);
+                    }, title: '创建时间', sort: true, order:'desc'
+                },
+                {align: 'center', toolbar: '#rspTaskTableBar', title: '操作'}
+            ]]
+        });
+
+        // 搜索
+        form.on('submit(searchSubmitRspTask)', function (data) {
+            insTb.reload({where: data.field, page: {curr: 1}});
+        });
+
+        // 工具条点击事件
+        table.on('tool(rspTaskTable)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') { // 删除
+                doDelete(obj);
+            }else if(obj.event === 'show'){
+                open(obj.data.jobUrl,"_Blank");
+            }
+        });
+
+        // 删除
+        function doDelete(obj) {
+            layer.confirm('确定要删除吗？', {
+                offset: '65px',
+                skin: 'layui-layer-admin'
+            }, function (i) {
+                layer.close(i);
+                layer.load(2);
+                admin.req('rspTask/' + obj.data.rspTaskId, {}, function (res) {
+                    layer.closeAll('loading');
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {icon: 1});
+                        obj.del();
+                    } else {
+                        layer.msg(res.msg, {icon: 2});
+                    }
+                }, 'DELETE');
+            });
+        }
+
+    });
+</script>

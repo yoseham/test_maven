@@ -1,0 +1,43 @@
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form toolbar">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button id="submit-task",lay-filter="task-submit" class="layui-btn layui-btn-fluid" lay-submit>清除标记数据</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- js部分 -->
+<script>
+    layui.use(['layer', 'form', 'table', 'util', 'admin', 'tableX', 'config'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var admin = layui.admin;
+        var tableX = layui.tableX;
+        var config = layui.config;
+
+        // 添加按钮点击事件
+        $('#submit-task').click(function () {
+            admin.req('sys/deleteTrash',{}, function(res){
+                    if (res.code==200){
+                        layer.msg("删除成功",{icon: 1})
+                    }else{
+                        layer.msg(res.code+":"+"错误",{icon: 5})
+                    }
+            },'get');
+        });
+
+    });
+</script>

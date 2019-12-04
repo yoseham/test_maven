@@ -1,0 +1,272 @@
+<link rel="stylesheet" href="assets/module/dtree/dtree.css"/>
+<link rel="stylesheet" href="assets/module/dtree/font/dtreefont.css"/>
+<style>
+    #treeTbTree {
+        height: 535px;
+        overflow: auto;
+    }
+
+    @media screen and (max-width: 750px) {
+        #treeTbTree {
+            height: auto;
+        }
+    }
+
+    /** dtree选中颜色重写 */
+    .dtree-theme-item-this {
+        background-color: #eeeeee !important;
+    }
+
+    .numberInfoSubTitle {
+        color: rgba(0, 0, 0, .45);
+        font-size: 14px;
+        height: 22px;
+        line-height: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-break: break-all;
+    }
+
+    .numberInfoValue {
+        color: rgba(0, 0, 0, .85);
+        font-size: 24px;
+        margin-top: 10px;
+        height: 32px;
+        line-height: 32px;
+    }
+
+    .numberInfoSuffix {
+        color: rgba(0, 0, 0, .65);
+        font-size: 16px;
+        font-style: normal;
+        margin-left: 4px;
+        line-height: 32px;
+    }
+</style>
+
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <!-- 左树 -->
+        <div class="layui-col-sm12 layui-col-md4 layui-col-lg3">
+            <div class="layui-card">
+                <div class="layui-card-body mini-bar" id="treeTbTree">
+                </div>
+            </div>
+        </div>
+        <!-- 右表 -->
+        <div class="layui-col-sm12 layui-col-md8 layui-col-lg9">
+            <div class="layui-card">
+                <div class="layui-card-body" id="chatView" style="min-height: 535px;">
+
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-col-xs12 layui-col-md12">
+                            <div class="layui-card" style="">
+                                <div class="layui-card-header">数据详情</div>
+                                <div class="layui-card-body">
+                                    <div class="layui-row">
+                                        <div class="layui-col-xs12 layui-col-sm6 layui-col-lg3 text-center">
+                                            <div class="numberInfoSubTitle">RSP块数</div>
+                                            <div>
+                                                <span class="numberInfoValue" id="blockNum">-</span><em
+                                                    class="numberInfoSuffix">个</em>
+                                            </div>
+                                        </div>
+                                        <div class="layui-col-xs12 layui-col-sm6 layui-col-lg3 text-center">
+                                            <div class="numberInfoSubTitle">数据大小</div>
+                                            <div>
+                                                <span class="numberInfoValue" id="capacity">-</span><em
+                                                    class="numberInfoSuffix" id="danwei1">GB</em>
+                                            </div>
+                                        </div>
+                                        <div class="layui-col-xs12 layui-col-sm6 layui-col-lg3 text-center">
+                                            <div class="numberInfoSubTitle">平均每块大小</div>
+                                            <div>
+                                                <span class="numberInfoValue" id="meanSize">-</span><em
+                                                    class="numberInfoSuffix" id="danwei2">MB</em>
+                                            </div>
+                                        </div>
+                                        <div class="layui-col-xs12 layui-col-sm6 layui-col-lg3 text-center">
+                                            <div class="numberInfoSubTitle">创建时间</div>
+                                            <div>
+                                                <em id="createTime" class="numberInfoSuffix">-</em>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center;padding: 30px 0 10px 0;">
+                                        <img src="assets/images/front.png"
+                                             style="max-height: 437px; max-width: 100%;" alt="map">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- js部分 -->
+<script>
+    layui.use(['layer', 'form', 'table', 'admin', 'util', 'dtree'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var admin = layui.admin;
+        var util = layui.util;
+        var dtree = layui.dtree;
+        var config = layui.config;
+
+        var height=$(window).height();
+        var myheight=parseInt(height)-200;
+        document.getElementById("treeTbTree").style.height=myheight+'px';
+        document.getElementById("chatView").style.height=myheight+'px';
+        var myTree;
+        // 树形渲染
+        admin.req('dataset/rspTree', {}, function (res){
+            myTree=dtree.render({
+                elem: '#treeTbTree',
+                data: res.data,
+                type: 'all',
+                icon:"7",
+                initLevel: '3',
+                dot: false,
+                toolbar:true,
+                toolbarShow:["add","edit","delete"],
+                toolbarFun:toolbarFun,
+                toolbarStyle:{ title:"", area:["35%","55%"]}
+            });
+        },'get');
+
+
+
+        var toolbarFun = {
+            //添加树节点后调用的函数，用于用户自定义，如未指定则树不会发生变化
+            addTreeNode: function(treeNode, $div) {
+                console.log(treeNode);
+                var data={}
+                data["parentId"]=treeNode.parentId;
+                data["name"]=treeNode.addNodeName;
+                layer.load(2);
+                admin.ajax({
+                    url:config.base_server+"dataset",
+                    data:data,
+                    type:'post',
+                    dataType:'json',
+                    success:function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 200) {
+                            // 调用内置函数，新增节点后改变节点内容。传入null或false，则树不会发生变化
+                            myTree.changeTreeNodeAdd("refresh");
+                        } else {
+                            layer.msg("修改失败");
+                            myTree.changeTreeNodeAdd(false);
+                        }
+                    }
+                })
+
+            },
+            //编辑树节点后调用的函数，用于用户自定义，如未指定则树不会发生变化
+            editTreeNode: function(treeNode, $div){
+                var data={}
+                data["datasetId"]=treeNode.nodeId;
+                data["name"]=treeNode.editNodeName;
+                layer.load(2);
+                admin.ajax({
+                    url:config.base_server+"dataset",
+                    data:data,
+                    type:'put',
+                    dataType:'json',
+                    success:function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 200) {
+                            // 调用内置函数，修改节点后改变节点内容。传入false，则树不会发生变化
+                            myTree.changeTreeNodeEdit(true);
+                        } else {
+                            layer.msg("修改失败");
+                            myTree.changeTreeNodeEdit(false);
+                        }
+                    }
+                });
+            },
+            delTreeNode: function(treeNode, $div){ //删除树后调用的函数，用于用户自定义，如未指定则树不会发生变化
+                layer.msg(treeNode.nodeId);
+                layer.load(2);
+                admin.ajax({
+                    url:config.base_server+"dataset"+"/"+treeNode.nodeId,
+                    data:{},
+                    type:'delete',
+                    dataType:'json',
+                    success:function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 200) {
+                            myTree.changeTreeNodeDel(true); // 调用内置函数，删除节点后改变节点内容。传入false，则树不会发生变化
+                        } else {
+                            layer.msg("删除失败");
+                            myTree.changeTreeNodeDel(false);
+                        }
+                    }
+                })
+                // console.log(treeNode);
+
+            },
+            loadToolbarBefore: function(buttons, treeNode, $div){ // 右键菜单加载前的函数
+                if (treeNode.level==1){
+                    delete buttons.addToolbar;
+                    delete buttons.delToolbar;
+                }
+                if (treeNode.level==3){
+                    delete buttons.addToolbar;
+                }
+                console.log(buttons);
+                return buttons; // 返回按钮组，如不返回则按钮将不会显示。
+            }
+        };
+
+
+        // 树形点击事件
+        dtree.on('node("treeTbTree")', function (obj) {
+            var data = obj.param;
+            console.log(data);
+            if (data.level==3){
+                layer.load(2);
+                admin.ajax({
+                    url:config.base_server+"dataset/path-information/"+data.nodeId,
+                    data:{},
+                    type:'get',
+                    dataType:'json',
+                    success:function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 200) {
+                            rspData = res.data;
+                            console.log(res);
+                            fullelement(rspData);
+                        } else {
+                            layer.msg(res.message, {icon: 1});
+                        }
+                    }
+                })
+            }
+        });
+
+
+        function fullelement(data) {
+            var blockNum = data.blockNumber;
+            var capacity = data.capacity;
+
+
+            var createTime = new Date(data.createTime);
+            var danwei=capacity.substring(capacity.length-2,capacity.length)
+            var meanSize = Math.round((parseInt(capacity.substring(0,capacity.length-2))) / parseInt(blockNum));
+            document.getElementById("blockNum").innerText = blockNum;
+            document.getElementById("capacity").innerText = capacity.substring(0,capacity.length-2);
+            document.getElementById("meanSize").innerText = meanSize;
+            document.getElementById("danwei1").innerText = danwei;
+            document.getElementById("danwei2").innerText = danwei;
+            document.getElementById("createTime").innerText = createTime.toLocaleString();
+        }
+    });
+</script>

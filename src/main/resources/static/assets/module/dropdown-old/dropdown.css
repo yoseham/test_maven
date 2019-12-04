@@ -1,0 +1,456 @@
+/**
+ * 下拉菜单模块
+ * date:2018-12-10   License By http://easyweb.vip
+ */
+
+/** 遮罩层 */
+html.dropdown-no-scroll {
+    overflow: hidden;
+}
+
+.dropdown-menu-shade {
+    z-index: 9999998;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .3);
+}
+
+.dropdown-menu-shade.no-shade {
+    background-color: transparent;
+}
+
+/** 夜间主题 */
+.dropdown-menu.dark .dropdown-anchor, .dropdown-menu.dark .dropdown-anchor::after {
+    border-color: #32363F;
+}
+
+.dropdown-menu.dark ul {
+    background: #32363F
+}
+
+.dropdown-menu.dark ul li > a, .dropdown-menu.dark ul li label {
+    color: #a1a8b8
+}
+
+.dropdown-menu.dark ul li > a:hover, .dropdown-menu.dark ul li label:hover {
+    background-color: #272b34;
+}
+
+.dropdown-menu.dark ul li {
+    border-color: #484e58;
+}
+
+.dropdown-menu.dark ul li.title {
+    background: #474c58;
+    color: #868b9a;
+}
+
+/** 白色主题 */
+.dropdown-menu {
+    position: absolute;
+    z-index: 9999999;
+    top: 0;
+    left: 0;
+    border-radius: 3px;
+    display: none;
+}
+
+.dropdown-menu.fixed {
+    position: fixed;
+}
+
+.dropdown-opened {
+    display: block;
+}
+
+.dropdown-menu ul {
+    min-width: 105px;
+    list-style: none;
+    background: #ffffff;
+    overflow: auto;
+    padding: 6px 0;
+    margin: 0;
+    border-radius: 4px;
+    border: 1px solid #ebeef5;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+}
+
+.dropdown-menu ul li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    line-height: 18px;
+    border-bottom: 1px solid #ebeef5;
+    cursor: pointer;
+}
+
+.dropdown-menu ul li:last-child {
+    border: none;
+}
+
+.dropdown-menu ul li > a, .dropdown-menu ul li label {
+    display: block;
+    color: #606266;
+    text-decoration: none;
+    line-height: 18px;
+    padding: 10px 15px;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.dropdown-menu ul li > a:hover, .dropdown-menu ul li label:hover {
+    background-color: #eeeeee;
+}
+
+/** 禁用样式 */
+.dropdown-menu ul li > a.disabled, .dropdown-menu ul li > a.disabled:hover, .dropdown-menu ul li label.disabled, .dropdown-menu ul li label.disabled:hover {
+    cursor: not-allowed;
+    background: none;
+    color: #999;
+}
+
+/** 标题样式 */
+.dropdown-menu ul li.title {
+    padding: 5px 15px;
+    background: #f6f6f6;
+    color: #999;
+    font-family: "Roboto", "Open Sans", sans-serif;
+    font-size: 12px;
+}
+
+/** 小箭头 */
+.dropdown-menu .dropdown-anchor {
+    border: 7px solid #fff;
+}
+
+.dropdown-menu .dropdown-anchor, .dropdown-menu .dropdown-anchor::after {
+    position: absolute;
+    content: '';
+    display: inline-block;
+}
+
+.dropdown-menu .dropdown-anchor::after {
+    border: 6px solid #fff;
+}
+
+/** 上边箭头 */
+.dropdown-menu.dropdown-anchor-top-left .dropdown-anchor, .dropdown-menu.dropdown-anchor-top-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-top-right .dropdown-anchor {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-left-color: transparent;
+    top: -14px;
+}
+
+.dropdown-menu.dropdown-anchor-top-left .dropdown-anchor::after, .dropdown-menu.dropdown-anchor-top-center .dropdown-anchor::after, .dropdown-menu.dropdown-anchor-top-right .dropdown-anchor::after {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-left-color: transparent;
+    margin-top: -5px;
+    margin-left: -6px;
+}
+
+.dropdown-menu.dropdown-anchor-top-left:not(.dropdown-overlay-trigger), .dropdown-menu.dropdown-anchor-top-center:not(.dropdown-overlay-trigger), .dropdown-menu.dropdown-anchor-top-right:not(.dropdown-overlay-trigger) {
+    margin-top: 10px;
+}
+
+.dropdown-menu.dropdown-anchor-top-left.dropdown-anchor-top-left .dropdown-anchor, .dropdown-menu.dropdown-anchor-top-center.dropdown-anchor-top-left .dropdown-anchor, .dropdown-menu.dropdown-anchor-top-right.dropdown-anchor-top-left .dropdown-anchor {
+    left: 15px;
+}
+
+.dropdown-menu.dropdown-anchor-top-left.dropdown-anchor-top-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-top-center.dropdown-anchor-top-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-top-right.dropdown-anchor-top-center .dropdown-anchor {
+    left: calc(50% - 7px)
+}
+
+.dropdown-menu.dropdown-anchor-top-left.dropdown-anchor-top-right .dropdown-anchor, .dropdown-menu.dropdown-anchor-top-center.dropdown-anchor-top-right .dropdown-anchor, .dropdown-menu.dropdown-anchor-top-right.dropdown-anchor-top-right .dropdown-anchor {
+    left: calc(100% - 28px);
+}
+
+/** 下边箭头 */
+.dropdown-menu.dropdown-anchor-bottom-left .dropdown-anchor, .dropdown-menu.dropdown-anchor-bottom-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-bottom-right .dropdown-anchor {
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    top: 100%;
+}
+
+.dropdown-menu.dropdown-anchor-bottom-left .dropdown-anchor::after, .dropdown-menu.dropdown-anchor-bottom-center .dropdown-anchor::after, .dropdown-menu.dropdown-anchor-bottom-right .dropdown-anchor::after {
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    margin-top: -7px;
+    margin-left: -6px;
+}
+
+.dropdown-menu.dropdown-anchor-bottom-left:not(.dropdown-overlay-trigger), .dropdown-menu.dropdown-anchor-bottom-center:not(.dropdown-overlay-trigger), .dropdown-menu.dropdown-anchor-bottom-right:not(.dropdown-overlay-trigger) {
+    margin-top: -10px;
+}
+
+.dropdown-menu.dropdown-anchor-bottom-left.dropdown-anchor-bottom-left .dropdown-anchor, .dropdown-menu.dropdown-anchor-bottom-center.dropdown-anchor-bottom-left .dropdown-anchor, .dropdown-menu.dropdown-anchor-bottom-right.dropdown-anchor-bottom-left .dropdown-anchor {
+    left: 15px;
+}
+
+.dropdown-menu.dropdown-anchor-bottom-left.dropdown-anchor-bottom-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-bottom-center.dropdown-anchor-bottom-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-bottom-right.dropdown-anchor-bottom-center .dropdown-anchor {
+    left: calc(50% - 7px);
+}
+
+.dropdown-menu.dropdown-anchor-bottom-left.dropdown-anchor-bottom-right .dropdown-anchor, .dropdown-menu.dropdown-anchor-bottom-center.dropdown-anchor-bottom-right .dropdown-anchor, .dropdown-menu.dropdown-anchor-bottom-right.dropdown-anchor-bottom-right .dropdown-anchor {
+    left: calc(100% - 28px);
+}
+
+/** 左边箭头 */
+.dropdown-menu.dropdown-anchor-left-top:not(.dropdown-overlay-trigger), .dropdown-menu.dropdown-anchor-left-center:not(.dropdown-overlay-trigger), .dropdown-menu.dropdown-anchor-left-bottom:not(.dropdown-overlay-trigger) {
+    margin-left: 10px;
+}
+
+.dropdown-menu.dropdown-anchor-left-top .dropdown-anchor, .dropdown-menu.dropdown-anchor-left-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-left-bottom .dropdown-anchor {
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    left: -14px;
+}
+
+.dropdown-menu.dropdown-anchor-left-top .dropdown-anchor::after, .dropdown-menu.dropdown-anchor-left-center .dropdown-anchor::after, .dropdown-menu.dropdown-anchor-left-bottom .dropdown-anchor::after {
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    margin-left: -5px;
+    margin-top: -6px;
+}
+
+.dropdown-menu.dropdown-anchor-left-top.dropdown-anchor-left-top .dropdown-anchor, .dropdown-menu.dropdown-anchor-left-center.dropdown-anchor-left-top .dropdown-anchor, .dropdown-menu.dropdown-anchor-left-bottom.dropdown-anchor-left-top .dropdown-anchor {
+    top: 11px;
+}
+
+.dropdown-menu.dropdown-anchor-left-top.dropdown-anchor-left-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-left-center.dropdown-anchor-left-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-left-bottom.dropdown-anchor-left-center .dropdown-anchor {
+    top: calc(50% - 7px);
+}
+
+.dropdown-menu.dropdown-anchor-left-top.dropdown-anchor-left-bottom .dropdown-anchor, .dropdown-menu.dropdown-anchor-left-center.dropdown-anchor-left-bottom .dropdown-anchor, .dropdown-menu.dropdown-anchor-left-bottom.dropdown-anchor-left-bottom .dropdown-anchor {
+    top: calc(100% - 26px);
+}
+
+/** 右边箭头 */
+.dropdown-menu.dropdown-anchor-right-top .dropdown-anchor, .dropdown-menu.dropdown-anchor-right-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-right-bottom .dropdown-anchor {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    left: 100%;
+}
+
+.dropdown-menu.dropdown-anchor-right-top .dropdown-anchor::after, .dropdown-menu.dropdown-anchor-right-center .dropdown-anchor::after, .dropdown-menu.dropdown-anchor-right-bottom .dropdown-anchor::after {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    margin-left: -7px;
+    margin-top: -6px;
+}
+
+.dropdown-menu.dropdown-anchor-right-top:not(.dropdown-overlay-trigger), .dropdown-menu.dropdown-anchor-right-center:not(.dropdown-overlay-trigger), .dropdown-menu.dropdown-anchor-right-bottom:not(.dropdown-overlay-trigger) {
+    margin-left: -10px;
+}
+
+.dropdown-menu.dropdown-anchor-right-top.dropdown-anchor-right-top .dropdown-anchor, .dropdown-menu.dropdown-anchor-right-center.dropdown-anchor-right-top .dropdown-anchor, .dropdown-menu.dropdown-anchor-right-bottom.dropdown-anchor-right-top .dropdown-anchor {
+    top: 11px;
+}
+
+.dropdown-menu.dropdown-anchor-right-top.dropdown-anchor-right-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-right-center.dropdown-anchor-right-center .dropdown-anchor, .dropdown-menu.dropdown-anchor-right-bottom.dropdown-anchor-right-center .dropdown-anchor {
+    top: calc(50% - 7px);
+}
+
+.dropdown-menu.dropdown-anchor-right-top.dropdown-anchor-right-bottom .dropdown-anchor, .dropdown-menu.dropdown-anchor-right-center.dropdown-anchor-right-bottom .dropdown-anchor, .dropdown-menu.dropdown-anchor-right-bottom.dropdown-anchor-right-bottom .dropdown-anchor {
+    top: calc(100% - 26px);
+}
+
+/** 按钮里面三角形样式 */
+.icon-btn .layui-icon-triangle-d {
+    margin-right: 0;
+    font-size: 14px;
+}
+
+.layui-icon-triangle-d.top {
+    transform: rotate(180deg);
+    display: inline-table;
+}
+
+.layui-icon-triangle-d.left {
+    transform: rotate(90deg);
+    display: inline-table;
+}
+
+.layui-icon-triangle-d.right {
+    transform: rotate(-90deg);
+    display: inline-table;
+}
+
+/** 基于layui nav的下拉菜单 */
+
+.nav-btn {
+    position: static;
+    display: inline-flex;
+    padding: 0;
+    background: none;
+    vertical-align: inherit;
+}
+
+.nav-btn .layui-nav-bar {
+    display: none;
+}
+
+.nav-btn .layui-nav-item {
+    line-height: 38px;
+    border-left: 1px solid rgba(255, 255, 255, .5);
+    background-color: #009688;
+}
+
+.nav-btn .layui-nav-item > a:hover {
+    background: rgba(255, 255, 255, .2);
+}
+
+.nav-btn .layui-nav-item:first-child {
+    border-left: none;
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
+}
+
+.nav-btn .layui-nav-item:nth-last-child(2) {
+    border-bottom-right-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.nav-btn a {
+    cursor: pointer;
+}
+
+.nav-btn .layui-nav-item > a {
+    padding: 0 22px 0 10px;
+    color: #fff;
+}
+
+.nav-btn .layui-nav-item .layui-icon {
+    font-size: 16px;
+}
+
+.nav-btn .layui-nav-item.text-center > a {
+    padding: 0 10px 0 10px;
+}
+
+.nav-btn .layui-nav-more {
+    right: 8px;
+    border-color: #fff transparent transparent;
+}
+
+.nav-btn .layui-nav-mored {
+    border-color: transparent transparent #fff;
+}
+
+.nav-btn .layui-nav-child {
+    top: 43px;
+    padding: 2px 0;
+}
+
+.nav-btn .layui-nav-child hr {
+    margin: 2px 0;
+}
+
+.layui-nav-child.align-top {
+    top: auto;
+    bottom: 43px;
+}
+
+.layui-nav-child.align-right {
+    right: 0;
+    left: auto;
+}
+
+.nav-btn-lg .layui-nav-item {
+    line-height: 44px;
+}
+
+.nav-btn-lg .layui-nav-child {
+    top: 49px;
+}
+
+.nav-btn-lg .layui-nav-child.align-top {
+    top: auto;
+    bottom: 49px;
+}
+
+.nav-btn-sm .layui-nav-item {
+    line-height: 30px;
+}
+
+.nav-btn-sm .layui-nav-child {
+    top: 35px;
+}
+
+.nav-btn-sm .layui-nav-child.align-top {
+    top: auto;
+    bottom: 35px;
+}
+
+.nav-btn-xs .layui-nav-item {
+    line-height: 22px;
+}
+
+.nav-btn-xs .layui-nav-child {
+    top: 27px;
+}
+
+.nav-btn-xs .layui-nav-child.align-top {
+    top: auto;
+    bottom: 27px;
+}
+
+.nav-btn-sm .layui-nav-item > a {
+    font-size: 12px;
+    padding: 0 14px 0 8px;
+}
+
+.nav-btn.nav-btn-sm .layui-nav-more {
+    right: 5px;
+    border-width: 4px;
+    margin-top: -2px;
+}
+
+.nav-btn.nav-btn-sm .layui-nav-mored {
+    margin-top: -6px;
+}
+
+.nav-btn.nav-btn-sm .layui-nav-item.text-center > a {
+    padding: 0 8px 0 8px;
+}
+
+.nav-btn-xs .layui-nav-item > a {
+    font-size: 12px;
+    padding: 0 13px 0 5px;
+}
+
+.nav-btn.nav-btn-xs .layui-nav-more {
+    right: 4px;
+    border-width: 4px;
+    margin-top: -2px;
+}
+
+.nav-btn.nav-btn-xs .layui-nav-mored {
+    margin-top: -6px;
+}
+
+.nav-btn.nav-btn-xs .layui-nav-item.text-center > a {
+    padding: 0 5px 0 5px;
+}
+
+.nav-btn-lg .layui-nav-item > a {
+    font-size: 16px;
+    padding: 0 25px 0 13px;
+}
+
+.nav-btn.nav-btn-lg .layui-nav-more {
+    right: 10px;
+}
+
+.nav-btn.nav-btn-lg .layui-nav-item.text-center > a {
+    padding: 0 13px 0 13px;
+}

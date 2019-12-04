@@ -1,0 +1,249 @@
+<style>
+    #formStep .layui-form-item {
+        margin-bottom: 25px;
+    }
+
+    @media screen and (max-width: 1060px) {
+        #formStep .lay-step {
+            padding-left: 50px !important;
+        }
+    }
+
+    .marginTop {
+        margin-top: 100px;
+    }
+</style>
+
+<!-- 正文开始 -->
+<div class="layui-fluid" id="formStep">
+    <div class="layui-card">
+        <div class="layui-card-body" id="mainBody" style="padding-top: 40px;">
+
+            <div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
+                <div carousel-item>
+                    <div>
+                        <form class="layui-form" style="margin: 0 auto;max-width: 460px;padding-top: 60px;">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">数据集名:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="datasetName" id="datasetName" class="layui-input"
+                                           style="position:absolute;z-index:2;width:80%;" lay-verify="required"
+                                           onkeyup="search()" autocomplete="off">
+                                    <select type="text" id="ds_select" lay-filter="ds_select" autocomplete="off"
+                                            placeholder="数据集名称" lay-verify="required" class="layui-select" lay-search>
+                                        <!--                                        <option value="南方电网">南方电网</option>-->
+                                        <!--                                        <option value="四川电信">四川电信</option>-->
+                                        <!--                                        <option value="四川电信南充">四川电信南充</option>-->
+                                        <!--                                        <option value="HIGGS">HIGGS</option>-->
+                                        <!--                                        <option value="Taxi">Taxi</option>-->
+                                        <!--                                        <option value="ImageDS">ImageDS</option>-->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="marginTop">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">&emsp;下一步&emsp;
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <form class="layui-form" style="margin: 0 auto;max-width: 460px;padding-top: 60px;">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">HDFS路径:</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="sourcePath" id="sourcePath" class="layui-input"
+                                               lay-verify="required"
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label w-auto">RSP数据名:</label>
+                                    <div class="layui-input-inline mr0">
+                                        <input type="text" name="dataName" id="dataName" class="layui-input"
+                                               style="position:absolute;z-index:2;width:80%;" lay-verify="required"
+                                               onkeyup="search()" autocomplete="off">
+                                        <select type="text" id="dn_select" lay-filter="dn_select" autocomplete="off"
+                                                placeholder="数据名" lay-verify="required" class="layui-select" lay-search>
+                                            <!--                                            <option value="瞬时计量表">瞬时计量表</option>-->
+                                            <!--                                            <option value="珠海2013年全年用电">珠海2013年全年用电</option>-->
+                                            <!--                                            <option value="东莞2013年全年用电">东莞2013年全年用电</option>-->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">RSP块数:</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="reduceNumber" id="reduceNumber" class="layui-input"
+                                               lay-verify="required"
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn layui-btn-primary pre">上一步</button>
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo2">&emsp;提交任务&emsp;
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+
+                        <div style="text-align: center;margin-top: 90px;">
+                            <i id="iconMy" class="layui-icon layui-circle"
+                               style="color: white;font-size:30px;font-weight:bold;background: #52C41A;padding: 20px;line-height: 80px;">&#xe605;</i>
+                            <div id="result" style="font-size: 24px;color: #333;font-weight: 500;margin-top: 30px;">提交成功
+                            </div>
+                        </div>
+
+                        <div style="text-align: center;margin-top: 50px;">
+                            <button class="layui-btn next">再次提交</button>
+                            <button id="showTask" class="layui-btn layui-btn-primary">查看任务</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div style="color: #666;margin-bottom: 40px;padding-left: 30px;">
+                <h3>说明</h3><br>
+                <h4>提交RSP转换任务</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- js部分 -->
+<script>
+    layui.use(['layer', 'form', 'config', 'step', 'admin'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var step = layui.step;
+        var config = layui.config;
+        var admin = layui.admin;
+        var height = $(window).height();
+        var myheight = parseInt(height) - 200;
+        document.getElementById("mainBody").style.height = myheight + 'px';
+        document.getElementById("stepForm").style.height = myheight * 0.9 + 'px';
+        var datasetName;
+        var parentId;
+        admin.ajax({
+            url: config.base_server + "dataset/dataset-list",
+            data: {},
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                layer.closeAll('loading');
+                if (res.code == 200) {
+                    for (var i = 0; i < res.data.length; i++) {
+                        $("#ds_select").append("<option value=" + res.data[i].datasetId + ">" + res.data[i].name + "</option>");
+                    }
+                    form.render();
+                } else {
+                    layer.msg("加载失败");
+                }
+            }
+        });
+
+
+        form.on('select(ds_select)', function (data) {   //选择数据集名称 赋值给input框
+            datasetName = data.elem[data.elem.selectedIndex].text;
+            parentId = data.value;
+            $("#datasetName").val(datasetName);
+            $("#ds_select").next().find("dl").css({"display": "none"});
+            form.render();
+        });
+
+        form.on('select(dn_select)', function (data) {   //选择数据集名称 赋值给input框
+            $("#dataName").val(data.elem[data.elem.selectedIndex].text);
+            $("#dn_select").next().find("dl").css({"display": "none"});
+            form.render();
+        });
+
+        step.render({
+            elem: '#stepForm',
+            filter: 'stepForm',
+            width: '100%', //设置容器宽度
+            stepWidth: '750px',
+            height: '500px',
+            stepItems: [{
+                title: '选择数据集'
+            }, {
+                title: '提交任务'
+            }, {
+                title: '完成'
+            }]
+        });
+
+        form.on('submit(formDemo)', function (data) {
+            datasetName = data.field.datasetName;
+            admin.ajax({
+                url: config.base_server + "dataset/data-list/" + parentId,
+                data: {},
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    layer.closeAll('loading');
+                    if (res.code == 200) {
+                        for (var i = 0; i < res.data.length; i++) {
+                            $("#dn_select").append("<option value=" + res.data[i].datasetId + ">" + res.data[i].name + "</option>");
+                        }
+                        form.render();
+                    } else {
+                        layer.msg("加载失败");
+                    }
+                }
+            });
+            step.next('#stepForm');
+            return false;
+        });
+
+        form.on('submit(formDemo2)', function (obj) {
+            obj.field.datasetName = datasetName;
+            layer.load(2);
+            admin.ajax({
+                url: config.base_server + 'rsp/test',
+                data: obj.field,
+                type: 'post',
+                dataType: 'json',
+                success: function (res) {
+                    layer.closeAll('loading');
+                    if (res.code == 200) {
+                        // layer.msg("任务提交成功", {icon: 1, time: 5000})
+                        $("#result").text("提交成功")
+                    } else {
+                        $("#iconMy").attr("class", "layui-icon layui-icon-close layui-circle");
+                        $("#iconMy").css("background", "#C4050F");
+                        $("#iconMy").text("");
+                        $("#result").text("提交失败");
+                    }
+                    step.next('#stepForm');
+                }
+            });
+            return false;
+        });
+
+        $('.pre').click(function () {
+            step.pre('#stepForm');
+        });
+
+        $('.next').click(function () {
+            step.next('#stepForm');
+        });
+
+        $("#showTask").click(function () {
+            location.replace('#/rsp/convert');
+        })
+    });
+</script>

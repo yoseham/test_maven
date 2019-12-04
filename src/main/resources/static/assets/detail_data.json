@@ -1,0 +1,156 @@
+{
+  "code": 200,
+  "msg": "成功",
+  "data": [
+    {
+      "datasetId": "100003",
+      "parentId": "100002",
+      "name": "瞬时计量表",
+      "blockNum": "1000",
+      "capacity": "139",
+      "url": "/datawarehouse/southgrid/zdt_ssl",
+      "createTime": "2019-06-25 11:10:10",
+      "status": 0
+    },
+    {
+      "datasetId": "100004",
+      "parentId": "100002",
+      "name": "东莞2013年全年用电",
+      "blockNum": "1000",
+      "capacity": "87",
+      "url": "/datawarehouse/southgrid/data_mp_dongguan_2013",
+      "createTime": "2019-06-25 11:11:08",
+      "status": 0
+    },
+    {
+      "datasetId": "100005",
+      "parentId": "100002",
+      "name": "珠海2013年全年用电",
+      "blockNum": "1000",
+      "capacity": "112",
+      "url": "/datawarehouse/southgrid/data_mp_zhuhai_2013",
+      "createTime": "2019-06-25 10:23:56",
+      "status": 0
+    },
+    {
+      "datasetId": "100007",
+      "parentId": "100006",
+      "name": "浦江县2017年用户端光猫终端日志",
+      "blockNum": "1000",
+      "capacity": "145",
+      "url": "/datawarehouse/scdx/hgw",
+      "createTime": "2019-06-24 16:12:37",
+      "status": 0
+    },
+    {
+      "datasetId": "100008",
+      "parentId": "100006",
+      "name": "浦江县2017年宽带运维",
+      "blockNum": "500",
+      "capacity": "68",
+      "url": "/datawarehouse/scdx/pujiang_kuandai_2017",
+      "createTime": "2019-06-25 15:23:26",
+      "status": 0
+    },
+    {
+      "datasetId": "100009",
+      "parentId": "100006",
+      "name": "浦江县2017年ITV运维",
+      "blockNum": "500",
+      "capacity": "73",
+      "url": "/datawarehouse/scdx/pujiang_itv_2017",
+      "createTime": "2019-06-22 14:12:34",
+      "status": 0
+    },
+    {
+      "datasetId": "100011",
+      "parentId": "100010",
+      "name": "201801-06用户语音话单",
+      "blockNum": "100",
+      "capacity": "31",
+      "url": "/datawarehouse/scdx_nanchong/sz_mcall_2018",
+      "createTime": "2019-06-21 17:12:15",
+      "status": 0
+    },
+    {
+      "datasetId": "100012",
+      "parentId": "100010",
+      "name": "201801-06用户数据话单",
+      "blockNum": "100",
+      "capacity": "29",
+      "url": "/datawarehouse/scdx_nanchong/sz_mdata_2018",
+      "createTime": "2019-06-23 14:32:23",
+      "status": 0
+    },
+    {
+      "datasetId": "100013",
+      "parentId": "100010",
+      "name": "基站经纬度",
+      "blockNum": "100",
+      "capacity": "10",
+      "url": "/datawarehouse/scdx_nanchong/sz_p_cellinfo",
+      "createTime": "2019-06-23 15:32:53",
+      "status": 0
+    },
+    {
+      "datasetId": "100015",
+      "parentId": "100014",
+      "name": "HIGGS_source_Data",
+      "blockNum": "500",
+      "capacity": "124",
+      "url": "/datawarehouse/higgs/higggs",
+      "createTime": "2019-06-22 14:27:33",
+      "status": 0
+    },
+    {
+      "datasetId": "100016",
+      "parentId": "100014",
+      "name": "HIGGS_500",
+      "blockNum": "500",
+      "capacity": "124",
+      "url": "/datawarehouse/higgs/higggs_500",
+      "createTime": "2019-06-22 15:32:53",
+      "status": 0
+    },
+    {
+      "datasetId": "100018",
+      "parentId": "100017",
+      "name": "Taxi2015",
+      "blockNum": "1000",
+      "capacity": "143",
+      "url": "/datawarehouse/taxi/taxi2015",
+      "createTime": "2019-06-21 17:25:22",
+      "status": 0
+    },
+    {
+      "datasetId": "100019",
+      "parentId": "100017",
+      "name": "Taxi2015_10100",
+      "blockNum": "500",
+      "capacity": "143",
+      "url": "/datawarehouse/taxi/taxi2015_500",
+      "createTime": "2019-06-23 11:10:40",
+      "status": 0
+    },
+    {
+      "datasetId": "100021",
+      "parentId": "100020",
+      "name": "ImageDS_source_data",
+      "blockNum": "100",
+      "capacity": "74",
+      "url": "/datawarehouse/image_ds/image_ds_source",
+      "createTime": "2019-06-22 09:10:03",
+      "status": 0
+    },
+    {
+      "datasetId": "100022",
+      "parentId": "100020",
+      "name": "ImageDS_out",
+      "blockNum": "500",
+      "capacity": "74",
+      "url": "/datawarehouse/image_ds/image_ds_source_500",
+      "createTime": "2019-06-22 09:11:10",
+      "status": 0
+    }
+  ]
+}

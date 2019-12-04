@@ -1,0 +1,326 @@
+<link rel="stylesheet" href="assets/module/dtree/dtree.css"/>
+<link rel="stylesheet" href="assets/module/dtree/font/dtreefont.css"/>
+<style>
+    #treeTbTree {
+        /*height: 535px;*/
+        overflow: auto;
+    }
+
+    #chatView {
+        overflow: auto;
+    }
+
+    @media screen and (max-width: 750px) {
+        #treeTbTree {
+            height: auto;
+        }
+
+        #chatView {
+            overflow: auto;
+        }
+    }
+
+    /** dtree选中颜色重写 */
+    .dtree-theme-item-this {
+        background-color: #eeeeee !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <!-- 左树 -->
+        <div class="layui-col-sm12 layui-col-md4 layui-col-lg3">
+            <div class="layui-card">
+                <div class="layui-card-body mini-bar" id="treeTbTree">
+                </div>
+            </div>
+        </div>
+        <!-- 右图 -->
+        <div class="layui-col-sm12 layui-col-md8 layui-col-lg9">
+            <div class="layui-card">
+                <div class="layui-card-body" id="chatView">
+                        <div class="layui-row layui-col-space15 ">
+                            <div class="layui-col-xs12 layui-col-md8">
+
+                            </div>
+                            <div class="layui-col-xs12 layui-col-md4">
+                                <div class="layui-card">
+                                    <div class="layui-card-body" style="overflow: hidden;">
+                                        <div id="chat0" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row layui-col-space15 ">
+                            <div class="layui-col-xs12 layui-col-md3">
+                                <div class="layui-card">
+                                    <div class="layui-card-body" style="overflow: hidden;">
+                                        <div id="chat1" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs12 layui-col-md3">
+                                <div class="layui-card">
+                                    <div class="layui-card-body" style="overflow: hidden;">
+                                        <div id="chat2" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs12 layui-col-md3">
+                                <div class="layui-card">
+                                    <div class="layui-card-body" style="overflow: hidden;">
+                                        <div id="chat3" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs12 layui-col-md3">
+                                <div class="layui-card">
+                                    <div class="layui-card-body" style="overflow: hidden;">
+                                        <div id="chat4" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row layui-col-space15 ">
+                            <div class="layui-col-xs12 layui-col-md3">
+                                <div class="layui-card">
+                                    <div class="layui-card-body" style="overflow: hidden;">
+                                        <div id="chat5" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs12 layui-col-md3">
+                                <div class="layui-card">
+                                    <div class="layui-card-body" style="overflow: hidden;">
+                                        <div id="chat6" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs12 layui-col-md3">
+                                <div class="layui-card">
+                                    <div class="layui-card-body" style="overflow: hidden;">
+                                        <div id="chat7" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs12 layui-col-md3">
+                                <div class="layui-card">
+                                    <div class="layui-card-body" style="overflow: hidden;">
+                                        <div id="chat8" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- js部分 -->
+<script src="assets/libs/echarts/echarts.min.js"></script>
+<script src="assets/libs/echarts/echartsTheme.js"></script>
+<script src="assets/libs/echarts/ecStat.min.js"></script>
+
+<script>
+    layui.use(['layer','config', 'element','dtree','admin'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var element = layui.element;
+        var dtree = layui.dtree;
+        var config = layui.config;
+        var admin=layui.admin;
+
+        var height=$(window).height();
+        var myheight=parseInt(height)-200;
+        document.getElementById("treeTbTree").style.height=myheight+'px';
+        document.getElementById("chatView").style.height=myheight+'px';
+        for (var i=0;i<9;i++){
+            document.getElementById("chat"+i).style.height=parseInt(myheight*0.28)+'px';
+        }
+
+
+        var myTree;
+        // 树形渲染
+        admin.req('dataset/rspTree', {}, function (res){
+            myTree=dtree.render({
+                elem: '#treeTbTree',
+                data: res.data,
+                type: 'all',
+                icon:"7",
+                initLevel: '3',
+                dot: false,
+                toolbar:true,
+                toolbarShow:["add","edit","delete"],
+                toolbarFun:toolbarFun,
+                toolbarStyle:{ title:"", area:["35%","55%"]}
+            });
+        },'get');
+
+
+
+        var toolbarFun = {
+            //添加树节点后调用的函数，用于用户自定义，如未指定则树不会发生变化
+            addTreeNode: function(treeNode, $div) {
+                console.log(treeNode);
+                var data={}
+                data["parentId"]=treeNode.parentId;
+                data["name"]=treeNode.addNodeName;
+                layer.load(2);
+                admin.ajax({
+                    url:config.base_server+"dataset",
+                    data:data,
+                    type:'post',
+                    dataType:'json',
+                    success:function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 200) {
+                            // 调用内置函数，新增节点后改变节点内容。传入null或false，则树不会发生变化
+                            myTree.changeTreeNodeAdd("refresh");
+                        } else {
+                            layer.msg("修改失败");
+                            myTree.changeTreeNodeAdd(false);
+                        }
+                    }
+                })
+
+            },
+            //编辑树节点后调用的函数，用于用户自定义，如未指定则树不会发生变化
+            editTreeNode: function(treeNode, $div){
+                var data={}
+                data["datasetId"]=treeNode.nodeId;
+                data["name"]=treeNode.editNodeName;
+                layer.load(2);
+                admin.ajax({
+                    url:config.base_server+"dataset",
+                    data:data,
+                    type:'put',
+                    dataType:'json',
+                    success:function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 200) {
+                            // 调用内置函数，修改节点后改变节点内容。传入false，则树不会发生变化
+                            myTree.changeTreeNodeEdit(true);
+                        } else {
+                            layer.msg("修改失败");
+                            myTree.changeTreeNodeEdit(false);
+                        }
+                    }
+                });
+            },
+            delTreeNode: function(treeNode, $div){ //删除树后调用的函数，用于用户自定义，如未指定则树不会发生变化
+                layer.msg(treeNode.nodeId);
+                layer.load(2);
+                admin.ajax({
+                    url:config.base_server+"dataset"+"/"+treeNode.nodeId,
+                    data:{},
+                    type:'delete',
+                    dataType:'json',
+                    success:function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 200) {
+                            myTree.changeTreeNodeDel(true); // 调用内置函数，删除节点后改变节点内容。传入false，则树不会发生变化
+                        } else {
+                            layer.msg("删除失败");
+                            myTree.changeTreeNodeDel(false);
+                        }
+                    }
+                })
+                // console.log(treeNode);
+
+            },
+            loadToolbarBefore: function(buttons, treeNode, $div){ // 右键菜单加载前的函数
+                if (treeNode.level==1){
+                    delete buttons.addToolbar;
+                    delete buttons.delToolbar;
+                }
+                if (treeNode.level==3){
+                    delete buttons.addToolbar;
+                }
+                console.log(buttons);
+                return buttons; // 返回按钮组，如不返回则按钮将不会显示。
+            }
+        };
+
+
+        // 树形点击事件
+        dtree.on('node("treeTbTree")', function (obj) {
+            var data = obj.param;
+            console.log(data);
+            if (data.level==3){
+                // layer.load(2);
+                // admin.ajax({
+                //     url:config.base_server+"dataset/path-information/"+data.nodeId,
+                //     data:{},
+                //     type:'get',
+                //     dataType:'json',
+                //     success:function (res) {
+                //         layer.closeAll('loading');
+                //         if (res.code == 200) {
+                //             rspData = res.data;
+                //             console.log(res);
+                //             fullelement(rspData);
+                //         } else {
+                //             layer.msg(res.message, {icon: 1});
+                //         }
+                //     }
+                // })
+            }
+        });
+
+
+
+        var girth = [8.3, 8.6, 8.8, 10.5, 10.7, 10.8, 11.0, 11.0, 11.1, 11.2, 11.3, 11.4, 11.4, 11.7, 12.0, 12.9, 12.9, 13.3, 13.7, 13.8, 14.0, 14.2, 14.5, 16.0, 16.3, 17.3, 17.5, 17.9, 18.0, 18.0, 20.6];
+
+        var bins = ecStat.histogram(girth);
+
+        var names=['ALLData','Block 1','Block 2','Block 3','Block 4','Block 5','Block 6','Block 7','Block 8']
+
+        var option;
+        var myCharts;
+        for(var i=0;i<names.length;i++){
+            option= {
+                title: {
+                    text: names[i]+' ('+ girth.length+' records)',
+                    textStyle: {
+                        color: '#000'
+                    },
+                },
+                tooltip: {
+                    trigger: "axis"
+                },
+                xAxis: [{
+                    type: "value",
+                    boundaryGap: !1,
+                    scale: true,
+                }],
+                yAxis: [{
+                    type: "value"
+                }],
+                series: [{
+                    type: "line",
+                    barWidth: '50%',
+                    smooth: !0,
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: "default"
+                            }
+                        }
+                    },
+                    data: bins.data
+                }]
+            };
+            myCharts=echarts.init(document.getElementById('chat'+i), myEchartsTheme);
+            myCharts.setOption(option);
+        }
+
+        // 窗口大小改变事件
+        window.onresize = function () {
+            for(var i=0;i<names.length;i++){
+                myCharts = echarts.getInstanceById(document.getElementById('chat'+i).getAttribute('_echarts_instance_'));
+                myCharts.resize();
+            }
+        };
+    });
+</script>
