@@ -16,6 +16,9 @@ public class Test {
         List<Map<String, Object>> menuTree = getMenuTree(JSONUtil.parseArray(json, Menu.class), "-1");
         removeEmptyMenu(menuTree);
         System.out.println(JSON.toJSONString(menuTree));
+
+
+
     }
 
 
