@@ -20,6 +20,8 @@ public class RspPlatformApplication extends SpringBootServletInitializer {
         return application.sources(RspPlatformApplication.class);
     }
 
+
+
     public static void main(String[] args) {
         SpringApplication.run(RspPlatformApplication.class, args);
     }
